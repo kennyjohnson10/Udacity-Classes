@@ -34,8 +34,9 @@ from xml.dom import minidom
 def get_coords(xml):
 		parsed_data = minidom.parseString(xml)
 		coordinates = parsed_data.getElementsByTagName('gml:coordinates')
-		coordinates = coordinates[0].childNodes[0].nodeValue.split(',')
-		return (coordinates[1], coordinates[0])
+		if coordinates:
+			coordinates = coordinates[0].childNodes[0].nodeValue.split(',')
+			return (coordinates[1], coordinates[0])
 
 
 print get_coords(xml)
