@@ -1,0 +1,15 @@
+{% extends "home.html" %}
+
+{% block title %}
+	{{ perma_link_title }}
+{% endblock title %}
+
+{% block content %}
+<div class="well">
+	<span class="pull-left">{{ blog_subject }}</span>
+	<span class="pull-right">{{ blog_datetime }}</span>
+	<div class="clearfix"></div>
+	<div class="divider"></div>
+	<p>{{ blog_content }}</p>
+</div>
+{% endblock content %}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="{% block langugae %}en{% endblock langugae %}">
+	<head>
+		<title>
+			{% block title %}
+				My Blog
+			{% endblock title %}
+		</title>
+		<!-- Bootstrap -->
+		<link href="/stylesheets/css/base.css" rel="stylesheet"/>
+		<link href="/stylesheets/css/bootstrap.min.css" rel="stylesheet"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+		<!--SEO-->
+		<meta name="description" content="{{ the_description_for_this_page }}"/>
+		<meta name="keywords" content="{{ the_seo_content_for_this_page }}"/>
+	</head>
+	<body>
+		<div id="content" class="padding">
+			<div>
+				<div><h1>My Blog Site Home Page</h1></div>
+
+				{% block container %}
+				<div class="container">
+				{% block content %}
+					{% for post in blog_postings %}
+						<div class="well">
+							<div>
+								<span class="pull-left">{{ post.subject }}</span>
+								<span class="pull-right">{{ post.datetime }}</span>
+							</div>
+							<div class="clearfix"></div>
+							<div class="divider"></div>
+							<p>{{ post.content }}</p>
+						</div>
+					{% endfor %}
+				{% endblock content %}
+				</div>
+				{% endblock container %}
+			</div>
+		</div>
+
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script src="/stylesheets/js/bootstrap.min.js"></script>
+	</body>
+</html>
