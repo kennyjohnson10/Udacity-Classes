@@ -11,11 +11,12 @@ def complex_computation(a, b):
 # results after computing them for the first time so future calls are faster
 cache = {}
 def cached_computation(a, b):
-    if cache.get(str(a)):
-        return cache.get(str(a))
+	key = (a, b)
+    if key in cache:
+        return cache[key]
     else:
-        cache[str(a)] = complex_computation(a, b)
-        return cache[str(a)]
+        cache[key] = complex_computation(a, b)
+        return cache[key]
 
 start_time = time.time()
 print cached_computation(5, 3)
