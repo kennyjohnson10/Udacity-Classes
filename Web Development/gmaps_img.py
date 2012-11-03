@@ -5,8 +5,8 @@ from string import join
 # make a basic Point class
 Point = namedtuple('Point', ["lat", "lon"])
 points = [Point(1,2),
-          Point(3,4),
-          Point(5,6)]
+		  Point(3,4),
+		  Point(5,6)]
 
 # implement the function gmaps_img(points) that returns the google maps image
 # for a map with the points passed in. A example valid response looks like
@@ -21,13 +21,13 @@ points = [Point(1,2),
 GMAPS_URL = "http://maps.googleapis.com/maps/api/staticmap?size=380x263&sensor=false&"
 
 def gmaps_img(points):
-    markers = []
-    for point in points:
-        if point:
-            markers.append('markers=%s,%s' % (point.lat, point.lon))
-    
-    markers = join(markers, '&')
-    return GMAPS_URL + markers
+	markers = []
+	for point in points:
+		if point:
+			markers.append('markers=%s,%s' % (point.lat, point.lon))
+	
+	markers = join(markers, '&')
+	return GMAPS_URL + markers
 
 
 print gmaps_img(points)

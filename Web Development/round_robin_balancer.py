@@ -13,11 +13,11 @@ length_server_list = len(SERVERS)
 def get_server():
 	global n
 	n += 1
-    return SERVERS(n % length_server_list)
+	return SERVERS(n % length_server_list)
 
 
 for run in xrange(10): 
-    print get_server()
+	print get_server()
 
 
 # >>> SERVER1
