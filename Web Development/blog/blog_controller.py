@@ -41,7 +41,7 @@ class BlogHandler(Handler):
 		blog_postings_data = get_latest_postings()
 		render_time = blog_postings_data[1]
 
-		time_since_page_generated = 'queried %s seconds ago' % render_time
+		time_since_page_generated = 'Queried %s seconds ago' % render_time
 		#render page
 		self.render('home.html', blog_postings = blog_postings_data[0], 
 					time_since_page_generated = time_since_page_generated)
