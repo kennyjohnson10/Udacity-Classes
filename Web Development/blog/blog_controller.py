@@ -15,7 +15,7 @@ from google.appengine.ext import db
 #import helper functions
 from helpers.validations import validate_blog_subject, validate_blog_body, validate_username, validate_password, validate_email
 from helpers.encryption import make_user_cookie_hash, validate_user_cookie, make_pw_hash, valid_pw
-from helpers.cache_helper import latest_postings
+from helpers.cache_helper import get_latest_postings, get_blog_post
 
 #Setup view directory for Jinja template engine
 template_dir = os.path.join(os.path.dirname(__file__), 'template')
@@ -38,7 +38,7 @@ class Handler(webapp2.RequestHandler):
 
 class BlogHandler(Handler):
 	def get(self):
-		blog_postings = latest_postings()
+		blog_postings = get_latest_postings()
 
 		render_time = self.request.cookies.get('render_time')
 		if render_time and blog_postings:
@@ -52,7 +52,7 @@ class BlogHandler(Handler):
 			self.response.headers.add_header('Set-Cookie', 
 								'render_time=%s; Path=/blog' % render_time)
 
-		time_since_page_generated = 'queried %s seconds ago' % (reload_time - float(render_time))
+		time_since_page_generated = 'queried %s seconds ago' % int(reload_time - float(render_time))
 		#render page
 		self.render('home.html', blog_postings = blog_postings, 
 					time_since_page_generated = time_since_page_generated)
@@ -89,22 +89,36 @@ class NewPostHandler(Handler):
 			permalink_id = str(blog_posting.key().id())
 
 			#update memcache and redirect to permalink
-			latest_postings(True)
+			get_latest_postings(True)
 			self.response.headers.add_header('Set-Cookie', 
 								'render_time=; Path=/blog')
 			self.redirect('/blog/'+ permalink_id)
 
 class PermalinkHandler(Handler):
 	def get(self, post_id):
-		blog_post = BlogPosts.get_by_id(int(post_id))
+		blog_post = get_blog_post(post_id)
+		render_time = self.request.cookies.get('post_render_time')
 
-		if blog_post:
-			self.render('permalink.html', blog_subject = blog_post.subject,
-										blog_datetime = blog_post.created,
-										blog_content = blog_post.content,
-										perma_link_title = post_id)
+		if render_time and blog_post:
+			reload_time = time.time()
+
 		else:
-			self.render('404.html')
+			render_time = time.time()
+			reload_time = render_time
+
+			# make cookie info concerning the last time this page was 
+			# rendered(created dynamically) 
+			self.response.headers.add_header('Set-Cookie', 
+								'post_render_time=%s; Path=/blog' % render_time)
+
+		time_since_page_generated = 'queried %s seconds ago' % int(reload_time - float(render_time))
+		
+		#render page
+		self.render('permalink.html', blog_subject = blog_post.subject,
+									blog_datetime = blog_post.created,
+									blog_content = blog_post.content,
+									perma_link_title = post_id,
+									time_since_page_generated = time_since_page_generated)
 
 
 class SignupHandler(Handler):
