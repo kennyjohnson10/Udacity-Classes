@@ -7,14 +7,14 @@ from google.appengine.api import memcache
 from google.appengine.ext import db
 
 
-def latest_postings(, update = False):
+def get_latest_postings(update = False):
 
 	key = 'latest_postings'
 	blog_postings = memcache.get(key)
 
 	if blog_postings == None or update:
 		#show error in the console 
-		logging.error('DB QUERY')
+		logging.error('DB POSTING QUERY')
 
 		blog_postings = db.GqlQuery("SELECT * "
 								"FROM BlogPosts "
@@ -27,5 +27,19 @@ def latest_postings(, update = False):
 
 	return blog_postings
 
-def permalink_caching(self):
-	pass
+def get_blog_post(post_id):
+	key = post_id
+	blog_post = memcache.get(key)
+
+	if blog_post == None:
+		#show error in the console 
+		logging.error('DB ID QUERY')
+		blog_post = BlogPosts.get_by_id(int(post_id))
+
+		#datastore query is executed
+		blog_post = list(blog_post)				
+
+		memcache.set(key, blog_post[0])
+
+	return blog_post[0]
+
