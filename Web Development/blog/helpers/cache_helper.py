@@ -28,13 +28,19 @@ def get_latest_postings(update = False):
 								"ORDER BY created DESC LIMIT 10")
 
 		#datastore query is executed
-		blog_postings = list(blog_postings)				
+		blog_postings = list(blog_postings)	
+
+		render_time = time.time()
+		reload_time = render_time		
 
 		#add time and values to memcache
 		memcache.set(key, blog_postings)
-		render_time = time.time()
 		memcache.set(render_time_key, render_time)
+
+	else:
+		reload_time = time.time()
 	
+	render_time = int(reload_time - render_time)
 	return (blog_postings, render_time)
 
 def get_blog_post(post_id):
@@ -52,11 +58,17 @@ def get_blog_post(post_id):
 		#datastore query is executed
 		blog_post = blog_post			
 
+		render_time = time.time()
+		reload_time = render_time
+
 		#add time and values to memcache
 		memcache.set(key, blog_post)
-		render_time = time.time()
 		memcache.set(render_time_key, render_time)
 
+	else:
+		reload_time = time.time()
+	
+	render_time = int(reload_time - render_time)
 	return (blog_post, render_time)
 
 def reset_cache():

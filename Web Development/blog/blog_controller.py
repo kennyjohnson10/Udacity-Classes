@@ -39,19 +39,11 @@ class Handler(webapp2.RequestHandler):
 class BlogHandler(Handler):
 	def get(self):
 		blog_postings_data = get_latest_postings()
+		render_time = blog_postings_data[1]
 
-		if render_time and blog_postings:
-			blog_postings = blog_postings_data[0]
-			render_time = blog_postings_data[1]
-			reload_time = time.time()
-
-		else:	
-			render_time = time.time()
-			reload_time = render_time
-
-		time_since_page_generated = 'queried %s seconds ago' % int(reload_time - float(render_time))
+		time_since_page_generated = 'queried %s seconds ago' % render_time
 		#render page
-		self.render('home.html', blog_postings = blog_postings, 
+		self.render('home.html', blog_postings = blog_postings_data[0], 
 					time_since_page_generated = time_since_page_generated)
 
 
@@ -94,26 +86,14 @@ class NewPostHandler(Handler):
 class PermalinkHandler(Handler):
 	def get(self, post_id):
 		blog_post = get_blog_post(post_id)
-		render_time = self.request.cookies.get('post_render_time')
+		render_time = blog_post[1]
 
-		if render_time and blog_post:
-			reload_time = time.time()
-
-		else:
-			render_time = time.time()
-			reload_time = render_time
-
-			# make cookie info concerning the last time this page was 
-			# rendered(created dynamically) 
-			self.response.headers.add_header('Set-Cookie', 
-								'post_render_time=%s%s|; Path=/blog' % (post_id, render_time))
-
-		time_since_page_generated = 'queried %s seconds ago' % int(reload_time - float(render_time))
+		time_since_page_generated = 'queried %s seconds ago' % render_time
 		
 		#render page
-		self.render('permalink.html', blog_subject = blog_post.subject,
-									blog_datetime = blog_post.created,
-									blog_content = blog_post.content,
+		self.render('permalink.html', blog_subject = blog_post[0].subject,
+									blog_datetime = blog_post[0].created,
+									blog_content = blog_post[0].content,
 									perma_link_title = post_id,
 									time_since_page_generated = time_since_page_generated)
 
