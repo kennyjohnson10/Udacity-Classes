@@ -38,8 +38,10 @@
 					{% for post in blog_postings %}
 						<div class="well">
 							<div>
-								<span class="pull-left">{{ post.subject }}</span>
-								<span class="pull-right">{{ post.datetime }}</span>
+								<a href="/blog/{{ post.key().id() }}">
+									<span class="pull-left">{{ post.subject }}</span>
+									<span class="pull-right">{{ post.created }}</span>
+								</a>
 							</div>
 							<div class="clearfix"></div>
 							<div class="divider"></div>
