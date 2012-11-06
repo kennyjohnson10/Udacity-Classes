@@ -5,7 +5,7 @@ class BlogPosts(db.Model):
 	"""Models an individual BlogPosts entry with an subject, content, and date."""
 	subject = db.StringProperty(required = True)
 	content = db.TextProperty(required = True)
-	datetime = db.DateTimeProperty(auto_now_add = True)
+	created = db.DateTimeProperty(auto_now_add = True)
 
 
 class Users(db.Model):

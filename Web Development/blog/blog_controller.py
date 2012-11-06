@@ -3,6 +3,8 @@ import jinja2
 import os
 import random
 import string
+import time
+import json
 
 #import models
 from blog_model import BlogPosts, Users
@@ -37,7 +39,7 @@ class BlogHandler(Handler):
 	def get(self):
 		blog_postings = db.GqlQuery("SELECT * "
 								"FROM BlogPosts "
-								"ORDER BY datetime DESC LIMIT 10")
+								"ORDER BY created DESC LIMIT 10")
 
 		self.render('home.html', blog_postings = blog_postings)
 
@@ -72,7 +74,7 @@ class NewPostHandler(Handler):
 			blog_posting.put()
 			permalink_id = str(blog_posting.key().id())
 
-			self.redirect('/'+ permalink_id)
+			self.redirect('/blog/'+ permalink_id)
 
 class PermalinkHandler(Handler):
 	def get(self, post_id):
@@ -80,8 +82,8 @@ class PermalinkHandler(Handler):
 
 		if blog_post:
 			self.render('permalink.html', blog_subject = blog_post.subject,
-										blog_datetime = blog_post.content,
-										blog_content = blog_post.datetime,
+										blog_datetime = blog_post.created,
+										blog_content = blog_post.content,
 										perma_link_title = post_id)
 		else:
 			self.render('404.html')
@@ -152,7 +154,7 @@ class SignupHandler(Handler):
 			
 			self.response.headers.add_header('Set-Cookie', 
 									'user_id=%s; Path=/welcome' % cookie_data)
-			self.redirect('/welcome')
+			self.redirect('/blog/welcome')
 
 
 class WelcomeHandler(Handler):
@@ -171,7 +173,7 @@ class WelcomeHandler(Handler):
 				self.render('welcome.html', name = user.username)
 
 		else:
-			self.redirect('/signup')
+			self.redirect('/blog/signup')
 
 
 class LoginHandler(Handler):
@@ -194,7 +196,7 @@ class LoginHandler(Handler):
 				
 				self.response.headers.add_header('Set-Cookie', 
 										'user_id=%s; Path=/welcome' % cookie_data)
-				self.redirect('/welcome')
+				self.redirect('/blog/welcome')
 		
 		self.render('login.html', error = "Invalid login.", username = username)
 
@@ -203,13 +205,46 @@ class LogoutHandler(Handler):
 	def get(self):
 		self.response.headers.add_header('Set-Cookie', 
 										'user_id=; Path=/welcome')
-		self.redirect('/signup')
+		self.redirect('/blog/signup')
 
-app = webapp2.WSGIApplication([('/', BlogHandler),
-								('/newpost', NewPostHandler),
-								('/([0-9]+)', PermalinkHandler),
-								('/signup', SignupHandler),
-								('/welcome', WelcomeHandler),
-								('/login', LoginHandler),
-								('/logout', LogoutHandler),],
+class PermalinkAPIHandler(Handler):
+	def get(self, post_id):
+		blog_post = BlogPosts.get_by_id(int(post_id))
+
+		if blog_post:
+			self.response.headers['Content-Type'] = 'application/json'
+			self.write(json.dumps({'contents': str(blog_post.content),
+									'created': time.strftime(str(blog_post.created)),
+									'subject': str(blog_post.subject)}))
+		else:
+			self.render('404.html')
+
+class BlogAPIHandler(Handler):
+	def get(self):
+		q = BlogPosts.all()
+		q.order("-created")
+
+		blog_listings = []
+		for blog_post in q.run(limit=10):
+			if blog_post:
+				blog_listings.append({'contents': str(blog_post.content),
+									  'created': time.strftime(str(blog_post.created)),
+									  'subject': str(blog_post.subject)})
+
+		if blog_listings:
+			self.response.headers['Content-Type'] = 'application/json'
+			self.write(json.dumps(blog_listings))
+		else:
+			self.render('404.html')
+
+app = webapp2.WSGIApplication([('/blog', BlogHandler),
+								('/blog/newpost', NewPostHandler),
+								('/blog/(\\d+)', PermalinkHandler),
+								('/blog/signup', SignupHandler),
+								('/blog/welcome', WelcomeHandler),
+								('/blog/login', LoginHandler),
+								('/blog/logout', LogoutHandler),
+								('/blog/(\\d+)\\.json', PermalinkAPIHandler),
+								('/blog\\.json', BlogAPIHandler)
+								],
 								debug=True)
