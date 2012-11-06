@@ -15,7 +15,7 @@ from google.appengine.ext import db
 #import helper functions
 from helpers.validations import validate_blog_subject, validate_blog_body, validate_username, validate_password, validate_email
 from helpers.encryption import make_user_cookie_hash, validate_user_cookie, make_pw_hash, valid_pw
-from helpers.cache_helper import get_latest_postings, get_blog_post
+from helpers.cache_helper import get_latest_postings, get_blog_post, reset_cache
 
 #Setup view directory for Jinja template engine
 template_dir = os.path.join(os.path.dirname(__file__), 'template')
@@ -38,19 +38,16 @@ class Handler(webapp2.RequestHandler):
 
 class BlogHandler(Handler):
 	def get(self):
-		blog_postings = get_latest_postings()
+		blog_postings_data = get_latest_postings()
 
-		render_time = self.request.cookies.get('render_time')
 		if render_time and blog_postings:
+			blog_postings = blog_postings_data[0]
+			render_time = blog_postings_data[1]
 			reload_time = time.time()
+
 		else:	
 			render_time = time.time()
 			reload_time = render_time
-
-			# make cookie info concerning the last time this page was 
-			# rendered(created dynamically) 
-			self.response.headers.add_header('Set-Cookie', 
-								'render_time=%s; Path=/blog' % render_time)
 
 		time_since_page_generated = 'queried %s seconds ago' % int(reload_time - float(render_time))
 		#render page
@@ -109,7 +106,7 @@ class PermalinkHandler(Handler):
 			# make cookie info concerning the last time this page was 
 			# rendered(created dynamically) 
 			self.response.headers.add_header('Set-Cookie', 
-								'post_render_time=%s; Path=/blog' % render_time)
+								'post_render_time=%s%s|; Path=/blog' % (post_id, render_time))
 
 		time_since_page_generated = 'queried %s seconds ago' % int(reload_time - float(render_time))
 		
@@ -272,6 +269,14 @@ class BlogAPIHandler(Handler):
 		else:
 			self.render('404.html')
 
+
+class CacheFlushHandler(Handler):
+	def get(self):
+		#flush the cache and redirect
+		reset_cache()
+		self.redirect('/blog')
+
+
 app = webapp2.WSGIApplication([('/blog', BlogHandler),
 								('/blog/newpost', NewPostHandler),
 								('/blog/(\\d+)', PermalinkHandler),
@@ -280,6 +285,6 @@ app = webapp2.WSGIApplication([('/blog', BlogHandler),
 								('/blog/login', LoginHandler),
 								('/blog/logout', LogoutHandler),
 								('/blog/(\\d+)\\.json', PermalinkAPIHandler),
-								('/blog\\.json', BlogAPIHandler)
-								],
+								('/blog\\.json', BlogAPIHandler),
+								('/flush', CacheFlushHandler)],
 								debug=True)
