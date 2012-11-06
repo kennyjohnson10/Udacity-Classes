@@ -1,4 +1,5 @@
 import logging
+import time
 
 #memcache
 from google.appengine.api import memcache
@@ -15,6 +16,9 @@ def get_latest_postings(update = False):
 	key = 'latest_postings'
 	blog_postings = memcache.get(key)
 
+	render_time_key = key + '_render_time'
+	render_time = memcache.get(render_time_key)
+
 	if blog_postings == None or update:
 		#show error in the console 
 		logging.error('DB POSTING QUERY')
@@ -26,13 +30,19 @@ def get_latest_postings(update = False):
 		#datastore query is executed
 		blog_postings = list(blog_postings)				
 
+		#add time and values to memcache
 		memcache.set(key, blog_postings)
-
-	return blog_postings
+		render_time = time.time()
+		memcache.set(render_time_key, render_time)
+	
+	return (blog_postings, render_time)
 
 def get_blog_post(post_id):
 	key = post_id
 	blog_post = memcache.get(key)
+
+	render_time_key = key + '_render_time'
+	render_time = memcache.get(render_time_key)
 
 	if blog_post == None:
 		#show error in the console 
@@ -42,7 +52,9 @@ def get_blog_post(post_id):
 		#datastore query is executed
 		blog_post = blog_post			
 
+		#add time and values to memcache
 		memcache.set(key, blog_post)
+		render_time = time.time()
+		memcache.set(render_time_key, render_time)
 
-	return blog_post
-
+	return (blog_post, render_time)
