@@ -20,6 +20,18 @@
 			<div>
 				<div><h1>My Blog Site Home Page</h1></div>
 
+				{% if user_logged_in %}
+					<div class="pull-right">
+						<a href="/logout">Logout</a>
+					</div>
+				{% elif not_relevant %}
+					<!--Do not render html beacuse it is not relevant to said template-->
+				{% else %}
+					<div class="pull-right">
+						<a href="/login">Login</a> / <a href="/signup">Signup</a>
+					</div>
+				{% endif %}
+
 				{% block container %}
 				<div class="container">
 				{% block content %}
@@ -37,6 +49,7 @@
 				{% endblock content %}
 				</div>
 				{% endblock container %}
+				<div class="pull-right">{{ time_since_page_generated }}</div>
 			</div>
 		</div>
 

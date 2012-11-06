@@ -30,4 +30,3 @@ def make_user_cookie_hash(user_id, name, salt=None):
 def validate_user_cookie(user_id, name, h):
 	salt = h.split('|')[2]
 	return make_user_cookie_hash(user_id, name, salt) == h
-

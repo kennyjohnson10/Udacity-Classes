@@ -15,6 +15,7 @@ from google.appengine.ext import db
 #import helper functions
 from helpers.validations import validate_blog_subject, validate_blog_body, validate_username, validate_password, validate_email
 from helpers.encryption import make_user_cookie_hash, validate_user_cookie, make_pw_hash, valid_pw
+from helpers.cache_helper import latest_postings
 
 #Setup view directory for Jinja template engine
 template_dir = os.path.join(os.path.dirname(__file__), 'template')
@@ -37,11 +38,24 @@ class Handler(webapp2.RequestHandler):
 
 class BlogHandler(Handler):
 	def get(self):
-		blog_postings = db.GqlQuery("SELECT * "
-								"FROM BlogPosts "
-								"ORDER BY created DESC LIMIT 10")
+		blog_postings = latest_postings()
 
-		self.render('home.html', blog_postings = blog_postings)
+		render_time = self.request.cookies.get('render_time')
+		if render_time and blog_postings:
+			reload_time = time.time()
+		else:	
+			render_time = time.time()
+			reload_time = render_time
+
+			# make cookie info concerning the last time this page was 
+			# rendered(created dynamically) 
+			self.response.headers.add_header('Set-Cookie', 
+								'render_time=%s; Path=/blog' % render_time)
+
+		time_since_page_generated = 'queried %s seconds ago' % (reload_time - float(render_time))
+		#render page
+		self.render('home.html', blog_postings = blog_postings, 
+					time_since_page_generated = time_since_page_generated)
 
 
 class NewPostHandler(Handler):
@@ -74,6 +88,10 @@ class NewPostHandler(Handler):
 			blog_posting.put()
 			permalink_id = str(blog_posting.key().id())
 
+			#update memcache and redirect to permalink
+			latest_postings(True)
+			self.response.headers.add_header('Set-Cookie', 
+								'render_time=; Path=/blog')
 			self.redirect('/blog/'+ permalink_id)
 
 class PermalinkHandler(Handler):
@@ -91,7 +109,7 @@ class PermalinkHandler(Handler):
 
 class SignupHandler(Handler):
 	def get(self):
-		self.render('signup.html')
+		self.render('signup.html', not_relevant = True)
 
 	def post(self):
 		username = self.request.get('username')
@@ -170,7 +188,8 @@ class WelcomeHandler(Handler):
 
 			#check cookie for user information and render html
 			if validate_user_cookie(user_id, user.username, hash_data):
-				self.render('welcome.html', name = user.username)
+				self.render('welcome.html', name = user.username, 
+											user_logged_in = True)
 
 		else:
 			self.redirect('/blog/signup')
@@ -178,7 +197,7 @@ class WelcomeHandler(Handler):
 
 class LoginHandler(Handler):
 	def get(self):
-		self.render('login.html')
+		self.render('login.html', not_relevant = True)
 
 	def post(self):
 		username = self.request.get('username')
@@ -198,7 +217,9 @@ class LoginHandler(Handler):
 										'user_id=%s; Path=/welcome' % cookie_data)
 				self.redirect('/blog/welcome')
 		
-		self.render('login.html', error = "Invalid login.", username = username)
+		self.render('login.html', error = "Invalid login.", 
+								  username = username, 
+								  not_relevant = True)
 
 
 class LogoutHandler(Handler):
