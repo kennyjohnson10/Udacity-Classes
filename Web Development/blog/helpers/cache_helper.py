@@ -3,6 +3,9 @@ import logging
 #memcache
 from google.appengine.api import memcache
 
+#import models
+from blog_model import BlogPosts
+
 #import appengine db methods for Model use
 from google.appengine.ext import db
 
@@ -37,9 +40,9 @@ def get_blog_post(post_id):
 		blog_post = BlogPosts.get_by_id(int(post_id))
 
 		#datastore query is executed
-		blog_post = list(blog_post)				
+		blog_post = blog_post			
 
-		memcache.set(key, blog_post[0])
+		memcache.set(key, blog_post)
 
-	return blog_post[0]
+	return blog_post
 
