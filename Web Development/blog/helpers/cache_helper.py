@@ -58,3 +58,6 @@ def get_blog_post(post_id):
 		memcache.set(render_time_key, render_time)
 
 	return (blog_post, render_time)
+
+def reset_cache():
+	memcache.flush_all()
