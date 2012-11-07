@@ -1,24 +1,26 @@
-{% extends "home.html" %}
+{% extends "footer.html" %}
 
 {% block title %}
 	Login
 {% endblock title %}
 
 {% block content %}
-<h2>Login</h2>
-<form method="post">
-	<label>
-		Username
-		<input type="text" value="{{ username }}" name="username">
-	</label>
-	<br/>
-	<label>
-		Password
-		<input type="password" name="password">
-		<br/>
-		<span class="error">{{ error }}</span>
-	</label>
-	<br/>
-	<button type="submit" class="btn">Submit</button>
-</form>
+	<div class="well well-large">
+		<h2>Login</h2>
+		<form method="post">
+			<label>
+				Username
+				<input type="text" value="{{ username }}" name="username">
+			</label>
+			<br/>
+			<label>
+				Password
+				<input type="password" name="password">
+				<br/>
+				<span class="error">{{ error }}</span>
+			</label>
+			<br/>
+			<button type="submit" class="btn">Submit</button>
+		</form>
+	</div>
 {% endblock content %}
