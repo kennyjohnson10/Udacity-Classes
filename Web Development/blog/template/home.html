@@ -1,62 +1,44 @@
-<!DOCTYPE html>
-<html lang="{% block langugae %}en{% endblock langugae %}">
-	<head>
-		<title>
-			{% block title %}
-				My Blog
-			{% endblock title %}
-		</title>
-		<!-- Bootstrap -->
-		<link href="/stylesheets/css/base.css" rel="stylesheet"/>
-		<link href="/stylesheets/css/bootstrap.min.css" rel="stylesheet"/>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+{% extends "footer.html" %}
 
-		<!--SEO-->
-		<meta name="description" content="{{ the_description_for_this_page }}"/>
-		<meta name="keywords" content="{{ the_seo_content_for_this_page }}"/>
-	</head>
-	<body>
-		<div id="content" class="padding">
-			<div>
-				<div><h1>My Blog Site Home Page</h1></div>
 
-				{% if user_logged_in %}
-					<div class="pull-right">
-						<a href="/logout">Logout</a>
-					</div>
-				{% elif not_relevant %}
-					<!--Do not render html beacuse it is not relevant to said template-->
-				{% else %}
-					<div class="pull-right">
-						<a href="/login">Login</a> / <a href="/signup">Signup</a>
-					</div>
-				{% endif %}
-
-				{% block container %}
-				<div class="container">
-				{% block content %}
-					{% for post in blog_postings %}
-						<div class="well">
-							<div>
-								<a href="/blog/{{ post.key().id() }}">
-									<span class="pull-left">{{ post.subject }}</span>
-									<span class="pull-right">{{ post.created }}</span>
-								</a>
-							</div>
-							<div class="clearfix"></div>
-							<div class="divider"></div>
-							<p>{{ post.content }}</p>
-						</div>
-					{% endfor %}
-				{% endblock content %}
-				</div>
-				{% endblock container %}
-				<div class="pull-right">{{ time_since_page_generated }}</div>
-			</div>
+<!--Title tag for the home page-->
+{% block title %}
+	Blog Front
+{% endblock title %}
+ 
+{% block content %}
+<!--Body content-->
+	<div class="well well-large">
+		{% load staticfiles %}
+		<div class="center-horizontally">
+			<img src="{% static "img/python.png" %}" alt="Icon">
+			<img src="{% static "img/add.png" %}" alt="Icon">
+			<img src="{% static "img/appengine.png" %}" alt="Icon">
 		</div>
+	</div>
 
-		<!-- Placed at the end of the document so the pages load faster -->
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-		<script src="/stylesheets/js/bootstrap.min.js"></script>
-	</body>
-</html>
+	<div class="well well-large">
+		<h2>Introduction</h2>
+
+		<div class="well">
+			{% for post in blog_postings %}
+				<div class="well">
+					<div>
+						<a href="/blog/{{ post.key().id() }}">
+							<span class="pull-left">{{ post.subject }}</span>
+							<span class="pull-right">{{ post.created }}</span>
+						</a>
+					</div>
+					<div class="clearfix"></div>
+					<div class="divider"></div>
+					<p>{{ post.content }}</p>
+				</div>
+			{% endfor %}
+	
+			<div class="clear"></div>
+			<p class="pull-left">
+				P.S. I hope you caught that little bit of sarcasm.
+			</p>
+		</div>
+	</div>
+{% endblock content %}
