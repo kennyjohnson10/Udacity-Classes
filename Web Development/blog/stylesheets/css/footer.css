@@ -1,0 +1,13 @@
+.footer-item-title {
+	font-size: 15px;
+	line-height: 20px;
+	list-style-type: none;
+}
+
+.footer-item {
+	list-style-type: none;
+}
+.footer-item a{
+	font-size: 12px;
+	color: gray;
+}
