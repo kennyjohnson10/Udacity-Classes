@@ -7,7 +7,6 @@
 			{% endblock title %}
 		</title>
 
-		{% load staticfiles %}
 		<!--Regular Css-->
 		<link href="/stylesheets/css/base.css" rel="stylesheet">
 		<link href="/stylesheets/css/colors.css" rel="stylesheet">
@@ -42,16 +41,18 @@
 		<div id="content" class="upper-padding">
 			<div>
 				{% block container %}
-				<h1>Mauro's Blog</h1>
-
 				<div class="container">
-				{% block content %}
-					This is the content for my Portfolio Website. 
-					Thank you for visiting. 
-				{% endblock content %}
+					<h1>Mauro's Blog</h1>
+					
+					{% block content %}
+						This is the content for my Portfolio Website. 
+						Thank you for visiting. 
+					{% endblock content %}
+
+					<div class="pull-right">{{ time_since_page_generated }}</div>
 				</div>
+
 				
-				<div class="pull-right">{{ time_since_page_generated }}</div>
 				{% endblock container %}
 			</div>
 		</div>

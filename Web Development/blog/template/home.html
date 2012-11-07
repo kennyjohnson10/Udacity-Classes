@@ -9,36 +9,19 @@
 {% block content %}
 <!--Body content-->
 	<div class="well well-large">
-		{% load staticfiles %}
-		<div class="center-horizontally">
-			<img src="{% static "img/python.png" %}" alt="Icon">
-			<img src="{% static "img/add.png" %}" alt="Icon">
-			<img src="{% static "img/appengine.png" %}" alt="Icon">
-		</div>
-	</div>
-
-	<div class="well well-large">
-		<h2>Introduction</h2>
-
-		<div class="well">
-			{% for post in blog_postings %}
-				<div class="well">
-					<div>
-						<a href="/blog/{{ post.key().id() }}">
-							<span class="pull-left">{{ post.subject }}</span>
-							<span class="pull-right">{{ post.created }}</span>
-						</a>
-					</div>
-					<div class="clearfix"></div>
-					<div class="divider"></div>
-					<p>{{ post.content }}</p>
+		<h2>Latest 10 Comments</h2>
+		{% for post in blog_postings %}
+			<div class="well">
+				<div>
+					<a href="/blog/{{ post.key().id() }}">
+						<span class="pull-left">{{ post.subject }}</span>
+						<span class="pull-right">{{ post.created }}</span>
+					</a>
 				</div>
-			{% endfor %}
-	
-			<div class="clear"></div>
-			<p class="pull-left">
-				P.S. I hope you caught that little bit of sarcasm.
-			</p>
-		</div>
+				<div class="clearfix"></div>
+				<div class="divider"></div>
+				<p>{{ post.content }}</p>
+			</div>
+		{% endfor %}
 	</div>
 {% endblock content %}
