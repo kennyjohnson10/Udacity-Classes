@@ -1,0 +1,117 @@
+/* roygbiv colors*/
+/* background colors*/
+.background_red {
+	background-color: red;
+}
+.background_orange {
+	background-color: orange;
+}
+.background_yellow {
+	background-color: yellow;
+}
+.background_green {
+	background-color: green;
+}
+.background_blue {
+	background-color: blue;
+}
+.background_indigo {
+	background-color: indigo;
+}
+.background_violnt {
+	background-color: violet;
+}
+
+/* text colors*/
+.red {
+	color: red;
+}
+.orange {
+	color: orange;
+}
+.yellow {
+	color: yellow;
+}
+.green {
+	color: green;
+}
+.blue {
+	color: blue;
+}
+.indigo {
+	color: indigo;
+}
+.violnt {
+	color: violet;
+}
+
+/* Black and White colors*/
+/* background colors*/
+.background_black {
+	background-color: black;
+}
+.background_white {
+	background-color: white;
+}
+
+/* text colors*/
+.text_black {
+	color: black;
+}
+.text_white {
+	color: white;
+}
+
+
+/* Diferent shaded of grey*/
+/* background colors*/
+.background_grey {
+	background-color: grey;
+}
+
+.background_lightGrey {
+	background-color: #DCDCDC;
+}
+
+.background_dimGrey {
+	background-color: #696969;
+}
+
+.background_darkGrey {
+	background-color: #A9A9A9;
+}
+
+.background_azure4 {
+	background-color: #838B8B;
+}
+
+.background_azure2 {
+	background-color: #E0EEEE;
+}
+
+/*regular greys*/
+.grey {
+	color: grey;
+}
+
+.lightGrey {
+	color: #DCDCDC;
+}
+
+.dimGrey {
+	color: #696969;
+}
+
+.darkGrey {
+	color: #A9A9A9;
+}
+
+.azure4 {
+	color: #838B8B;
+}
+
+.azure2 {
+	color: #E0EEEE;
+}
+
+/*Other colors*/
