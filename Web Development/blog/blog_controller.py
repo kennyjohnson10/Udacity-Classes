@@ -114,11 +114,13 @@ class SignupHandler(Handler):
 		valid_email = validate_email(email)
 
 		#query for user data to check for duplicate users in db
+		
 		q = Users.all()
 		q.filter("username =", username)
 		user_result = q.get()
+		
 
-		if user_result and not (valid_username and valid_password 
+		if user_result or not (valid_username and valid_password 
 					and mismatch_passwords and valid_email):
 			error_username = ''
 			error_password = ''
@@ -162,7 +164,7 @@ class SignupHandler(Handler):
 			cookie_data = make_user_cookie_hash(user_id,  username)
 			
 			self.response.headers.add_header('Set-Cookie', 
-									'user_id=%s; Path=/welcome' % cookie_data)
+									'user_id=%s; Path=/blog/welcome' % cookie_data)
 			self.redirect('/blog/welcome')
 
 
@@ -205,7 +207,7 @@ class LoginHandler(Handler):
 				cookie_data = make_user_cookie_hash(user_id,  username)
 				
 				self.response.headers.add_header('Set-Cookie', 
-										'user_id=%s; Path=/welcome' % cookie_data)
+										'user_id=%s; Path=/blog/welcome' % cookie_data)
 				self.redirect('/blog/welcome')
 		
 		self.render('login.html', error = "Invalid login.", 
@@ -216,7 +218,7 @@ class LoginHandler(Handler):
 class LogoutHandler(Handler):
 	def get(self):
 		self.response.headers.add_header('Set-Cookie', 
-										'user_id=; Path=/welcome')
+										'user_id=; Path=/blog/welcome')
 		self.redirect('/blog/signup')
 
 class PermalinkAPIHandler(Handler):
@@ -265,6 +267,6 @@ app = webapp2.WSGIApplication([('/blog', BlogHandler),
 								('/blog/login', LoginHandler),
 								('/blog/logout', LogoutHandler),
 								('/blog/(\\d+)\\.json', PermalinkAPIHandler),
-								('/blog\\.json', BlogAPIHandler),
+								('/blog/\\.json', BlogAPIHandler),
 								('/flush', CacheFlushHandler)],
 								debug=True)
