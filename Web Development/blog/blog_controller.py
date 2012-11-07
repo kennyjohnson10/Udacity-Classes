@@ -268,5 +268,5 @@ app = webapp2.WSGIApplication([('/blog', BlogHandler),
 								('/blog/logout', LogoutHandler),
 								('/blog/(\\d+)\\.json', PermalinkAPIHandler),
 								('/blog/\\.json', BlogAPIHandler),
-								('/flush', CacheFlushHandler)],
+								('/blog/flush', CacheFlushHandler)],
 								debug=True)
