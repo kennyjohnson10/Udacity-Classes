@@ -261,6 +261,11 @@ class CacheFlushHandler(Handler):
 		self.redirect('/blog')
 
 
+class AboutHandler(Handler):
+	def get(self):
+		self.render('about.html')
+
+
 app = webapp2.WSGIApplication([('/blog', BlogHandler),
 								('/blog/newpost', NewPostHandler),
 								('/blog/(\\d+)', PermalinkHandler),
@@ -270,5 +275,6 @@ app = webapp2.WSGIApplication([('/blog', BlogHandler),
 								('/blog/logout', LogoutHandler),
 								('/blog/(\\d+)\\.json', PermalinkAPIHandler),
 								('/blog/\\.json', BlogAPIHandler),
-								('/blog/flush', CacheFlushHandler)],
+								('/blog/flush', CacheFlushHandler),
+								('blog/about', AboutHandler),],
 								debug=True)
