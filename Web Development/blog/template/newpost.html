@@ -7,22 +7,28 @@
 {% block content %}	
 	<div class="well well-large">
 		<h2>New Post</h2>
+		<form class="form-horizontal" method="post">
+			<div class="control-group">
+				<label class="control-label" for="inputSubject">Subject</label>
+				<div class="controls">
+					<input type="text" value="{{ subject }}" name="subject" id="inputSubject" placeholder="Subject"/>
+					<span class="error">{{ error_subject }}</span>	
+				</div>
+			</div>
 
-		<form method="post">
-			<label>
-				Subject
-				<input type="text" value="{{ subject }}" name="subject">
-				<span class="error">{{ error_subject }}</span>
-			</label>
-			<br/>
-			<label>
-				Blog
-				<textarea type="text" name="content">{{ content }}</textarea>
-				<span class="error">{{ error_content }}</span>
-			</label>
-			<br/>
-			<br/>
-			<button type="submit" class="btn">Submit</button>
+			<div class="control-group">
+				<label class="control-label" for="inputContent">Content</label>
+				<div class="controls">
+					<textarea type="text" name="content" id="inputContent" placeholder="Content">{{ content }}</textarea>
+					<span class="error">{{ error_content }}</span>	
+				</div>
+			</div>
+
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="btn">Submit</button>
+				</div>
+			</div>
 		</form>
 	</div>
 {% endblock content %}
