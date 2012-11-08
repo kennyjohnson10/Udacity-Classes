@@ -131,7 +131,7 @@ class SignupHandler(Handler):
 				error_username = "That's not a valid username."
 
 			if not valid_password:
-				error_password = "That wasn't a valid password."
+				error_password = "That's not a valid password."
 			elif not mismatch_passwords:
 				error_mismatch_passwords = "Your passwords didn't match."
 
