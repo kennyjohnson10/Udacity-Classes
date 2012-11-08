@@ -49,7 +49,7 @@ class BlogHandler(Handler):
 
 class NewPostHandler(Handler):
 	def get(self):
-		self.render('newpost.html')
+		self.render('newpost.html', active_tab = 'active')
 
 	def post(self):
 		blog_subject = self.request.get('subject')
@@ -71,7 +71,8 @@ class NewPostHandler(Handler):
 			self.render('newpost.html', subject = blog_subject, 
 										content = blog_body,
 										error_subject = error_subject,
-										error_content = error_content)
+										error_content = error_content,
+										active_tab = 'active')
 		else:
 			blog_posting = BlogPosts(subject=blog_subject, content=blog_body)
 			blog_posting.put()
