@@ -7,32 +7,45 @@
 {% block content %}
 	<div class="well well-large">
 		<h2>Signup</h2>
-		<form method="post">
-			<label>
-				Username
-				<input type="text" value="{{ username }}" name="username">
-				<span class="error">{{ error_username }}</span>
-			</label>
-			<br/>
-			<label>
-				Password
-				<input type="password" name="password">
-				<span class="error">{{ error_password }}</span>
-			</label>
-			<br/>
-			<label>
-				Verify Password
-				<input type="password" name="verify">
-				<span class="error">{{ error_mismatch_passwords }}</span>
-			</label>
-			<br/>
-			<label>
-				Email (optional)
-				<input type="text" value="{{ email }}" name="email">
-				<span class="error">{{ error_email }}</span>
-			</label>
-			<br/>
-			<button type="submit" class="btn">Submit</button>
+		<form class="form-horizontal" method="post">
+			<div class="control-group">
+				<label class="control-label" for="inputUsername">Username</label>
+				<div class="controls">
+					<input type="text" value="{{ username }}" name="username" id="inputUsername" placeholder="Username"/>
+					<span class="error">{{ error_username }}</span>	
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="inputPassword">Password</label>
+				<div class="controls">
+					<input type="password" id="inputPassword" placeholder="Password"/>
+					<span class="error">{{ error_password }}</span>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="inputPassword">Verify Password</label>
+				<div class="controls">
+					<input type="password" id="inputPassword" placeholder="Verify Password"/>
+					<span class="error">{{ error_mismatch_passwords }}</span>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<label class="control-label" for="inputEmail">Email</label>
+				<div class="controls">
+					<input type="text" value="{{ email }}" name="email" id="inputEmail" placeholder="Email"/>
+					<span class="error">{{ error_email }}</span>
+				</div>
+			</div>
+
+			<div class="control-group">
+				<div class="controls">
+					<button type="submit" class="btn">Submit</button>
+				</div>
+			</div>
 		</form>
 	</div>
 {% endblock content %}
+
