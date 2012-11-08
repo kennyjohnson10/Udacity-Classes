@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block navigation_bar %}
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+				<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</a>
+
+				<a class="brand" href="/blog">Blog Project</a>
+			 
+				<!-- Everything you want hidden at 940px or less, place within here -->
+				<div class="nav-collapse collapse">
+				<!-- .nav, .navbar-search, .navbar-form, etc -->
+					<ul class="nav">
+						<li class="{{ home_active_tab }}"><a href="/blog">Home</a></li>	
+						<li class="divider-vertical"></li>	
+
+						<li class="{{ newpost_active_tab }}"><a href="/blog/newpost">NewPost</a></li>	
+						<li class="divider-vertical"></li>
+					</ul>
+
+					<ul class="nav pull-right">
+						<li class=""><a href="/blog/login">Log in</a></li>	
+						<li class="divider-vertical"></li>
+						<li class=""><a href="/blog/signup">Signup</a></li>
+					</ul>
+					<!-- figure out how to get this form to work correctly
+					<form class="navbar-form pull-right" method="post">
+					    <input type="text" class="span2" name="username" placeholder="Username">
+					    <input type="password" class="span2" name="password" placeholder="Password"/>
+					    <button type="submit" class="btn">Log in</button>
+				    </form>
+					-->
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock navigation_bar %}

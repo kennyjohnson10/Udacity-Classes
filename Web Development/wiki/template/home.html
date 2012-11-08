@@ -1,0 +1,27 @@
+{% extends "footer.html" %}
+
+
+<!--Title tag for the home page-->
+{% block title %}
+	Blog Front
+{% endblock title %}
+ 
+{% block content %}
+<!--Body content-->
+	<div class="well well-large">
+		<h2>Latest 10 Comments</h2>
+		{% for post in blog_postings %}
+			<div class="well">
+				<div>
+					<a href="/blog/{{ post.key().id() }}">
+						<span class="pull-left">{{ post.subject }}</span>
+						<span class="pull-right">{{ post.created }}</span>
+					</a>
+				</div>
+				<div class="clearfix"></div>
+				<div class="divider"></div>
+				<p>{{ post.content }}</p>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock content %}
