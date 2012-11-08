@@ -44,12 +44,13 @@ class BlogHandler(Handler):
 		time_since_page_generated = 'Queried %s seconds ago' % render_time
 		#render page
 		self.render('home.html', blog_postings = blog_postings_data[0], 
-					time_since_page_generated = time_since_page_generated)
+					time_since_page_generated = time_since_page_generated,
+					 home_active_tab = 'active')
 
 
 class NewPostHandler(Handler):
 	def get(self):
-		self.render('newpost.html', active_tab = 'active')
+		self.render('newpost.html', newpost_active_tab = 'active')
 
 	def post(self):
 		blog_subject = self.request.get('subject')
