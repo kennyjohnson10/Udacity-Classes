@@ -25,12 +25,16 @@
 					</ul>
 
 					<ul class="nav pull-right">
-						<li class=""><a href="/blog/login">Log in</a></li>	
-						<li class="divider-vertical"></li>
-						<li class=""><a href="/blog/signup">Signup</a></li>
+						{% if login_status %}
+							<li><a href="/blog/logout">Logout</a></li>	
+						{% else %}
+							<li><a href="/blog/login">Log in</a></li>	
+							<li><a href="/blog/signup">Signup</a></li>
+						{% endif %}
 					</ul>
+
 					<!-- figure out how to get this form to work correctly
-					<form class="navbar-form pull-right" method="post">
+					<form class="navbar-form" method="post">
 					    <input type="text" class="span2" name="username" placeholder="Username">
 					    <input type="password" class="span2" name="password" placeholder="Password"/>
 					    <button type="submit" class="btn">Log in</button>
