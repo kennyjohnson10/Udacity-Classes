@@ -282,15 +282,15 @@ class AboutHandler(Handler):
 		self.render('about.html')
 
 
-app = webapp2.WSGIApplication([('/blog', BlogHandler),
-								('/blog/newpost', NewPostHandler),
-								('/blog/(\\d+)', PermalinkHandler),
-								('/blog/signup', SignupHandler),
-								('/blog/welcome', WelcomeHandler),
-								('/blog/login', LoginHandler),
-								('/blog/logout', LogoutHandler),
-								('/blog/(\\d+)\\.json', PermalinkAPIHandler),
-								('/blog/\\.json', BlogAPIHandler),
-								('/blog/flush', CacheFlushHandler),
-								('/blog/about', AboutHandler),],
+app = webapp2.WSGIApplication([('/blog/?', BlogHandler),
+								('/blog/newpost/?', NewPostHandler),
+								('/blog/(\\d+)/?', PermalinkHandler),
+								('/blog/signup/?', SignupHandler),
+								('/blog/welcome/?', WelcomeHandler),
+								('/blog/login/?', LoginHandler),
+								('/blog/logout/?', LogoutHandler),
+								('/blog/(\\d+)/?\\.json/?', PermalinkAPIHandler),
+								('/blog/?\\.json/?', BlogAPIHandler),
+								('/blog/flush/?', CacheFlushHandler),
+								('/blog/about/?', AboutHandler),],
 								debug=True)
