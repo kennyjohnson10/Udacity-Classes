@@ -30,10 +30,14 @@ class Handler(webapp2.RequestHandler):
 
 	def render_str(self, template, **params):
 		t = jinja_env.get_template(template)
+		params['login_status'] = self.login_status()
 		return t.render(params)
 
 	def render(self, template, **kw):
 		self.write(self.render_str(template, **kw))
+
+	def login_status(self):
+		return self.request.cookies.get('user_id')
 
 
 class BlogHandler(Handler):
@@ -221,7 +225,7 @@ class LogoutHandler(Handler):
 	def get(self):
 		self.response.headers.add_header('Set-Cookie', 
 										'user_id=; Path=/blog/welcome')
-		self.redirect('/blog/signup')
+		self.redirect('/blog')
 
 class PermalinkAPIHandler(Handler):
 	def get(self, post_id):
