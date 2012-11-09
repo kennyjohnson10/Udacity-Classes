@@ -6,6 +6,9 @@ import string
 import time
 import json
 
+#xml library, used for parsing xml
+from xml.dom import minidom
+
 #import models
 from blog_model import BlogPosts, Users
 
@@ -39,36 +42,15 @@ class Handler(webapp2.RequestHandler):
 	def login_status(self):
 		return self.request.cookies.get('user_id')
 
-	def render_json(self, d):
-		json_txt = json.dumps(d)
+	def render_json(self, data):
+		json_txt = json.dumps(data)
 		self.response.headers['Content-Type'] = 'application/json; charset=UTF-8'
 		self.write(json_txt)
 
-	def set_secure_cookie(self, name, val):
-		cookie_val = make_secure_val(val)
-		self.response.headers.add_header(
-			'Set-Cookie',
-			'%s=%s; Path=/' % (name, cookie_val))
-
-	def read_secure_cookie(self, name):
-		cookie_val = self.request.cookies.get(name)
-		return cookie_val and check_secure_val(cookie_val)
-
-	def login(self, user):
-		self.set_secure_cookie('user_id', str(user.key().id()))
-
-	def logout(self):
-		self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
-
-	def initialize(self, *a, **kw):
-		webapp2.RequestHandler.initialize(self, *a, **kw)
-		uid = self.read_secure_cookie('user_id')
-		self.user = uid and User.by_id(int(uid))
-
-		if self.request.url.endswith('.json'):
-			self.format = 'json'
-		else:
-			self.format = 'html'
+	def render_xml(self, data):
+		xml_txt = minidom.parseString(data)
+		self.response.headers['Content-Type'] = 'text/xml; charset=UTF-8'
+		self.write(xml_txt)
 
 
 class BlogHandler(Handler):
@@ -201,7 +183,7 @@ class SignupHandler(Handler):
 			cookie_data = make_user_cookie_hash(user_id,  username)
 			
 			self.response.headers.add_header('Set-Cookie', 
-									'user_id=%s; Path=/blog/welcome' % cookie_data)
+									'user_id=%s; Path=/blog' % cookie_data)
 			self.redirect('/blog/welcome')
 
 
