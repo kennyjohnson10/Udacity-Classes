@@ -213,7 +213,7 @@ class LoginHandler(Handler):
 				cookie_data = make_user_cookie_hash(user_id,  username)
 				
 				self.response.headers.add_header('Set-Cookie', 
-										'user_id=%s; Path=/blog/welcome' % cookie_data)
+										'user_id=%s; Path=/' % cookie_data)
 				self.redirect('/blog/welcome')
 		
 		self.render('login.html', error = "Invalid login.", 
@@ -223,8 +223,7 @@ class LoginHandler(Handler):
 
 class LogoutHandler(Handler):
 	def get(self):
-		self.response.headers.add_header('Set-Cookie', 
-										'user_id=; Path=/blog/welcome')
+		self.response.delete_cookie('user_id')
 		self.redirect('/blog')
 
 class PermalinkAPIHandler(Handler):
