@@ -3,8 +3,8 @@ import string
 import hashlib
  
 
-def make_salt():
-    return ''.join(random.choice(string.letters) for x in xrange(5))
+def make_salt(length = 5):
+    return ''.join(random.choice(string.letters) for x in xrange(length))
 
 
 def make_pw_hash(name, pw, salt=None):
