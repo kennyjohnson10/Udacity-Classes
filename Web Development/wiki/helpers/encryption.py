@@ -1,5 +1,7 @@
 import hmac
 import hashlib
+import random
+import string
 
 secret = 'Thanh is crazy'
 
@@ -13,7 +15,7 @@ def check_secure_val(secure_val):
 		return val
 
 def make_salt(length = 5):
-	return ''.join(random.choice(letters) for x in xrange(length))
+	return ''.join(random.choice(string.ascii_letters) for x in xrange(length))
 
 def make_pw_hash(name, pw, salt = None):
 	if not salt:
