@@ -1,4 +1,5 @@
 from google.appengine.ext import db
+from helpers.encryption import make_pw_hash, valid_pw
 
 #Blog Models
 class WikiPost(db.Model):
