@@ -7,15 +7,12 @@ import time
 import json
 
 #import models
-from blog_model import BlogPosts, Users
-
-#import appengine db methods for Model use
-from google.appengine.ext import db
+from wiki_model import WikiPost, User
 
 #import helper functions
 from helpers.validations import validate_blog_subject, validate_blog_body, validate_username, validate_password, validate_email
-from helpers.encryption import check_secure_val
-from helpers.cache_helper import get_latest_postings, get_blog_post, reset_cache
+from helpers.encryption import check_secure_val, make_secure_val
+from helpers.cache_helper import get_cached_data, cache_data, reset_cache
 
 #Setup view directory for Jinja template engine
 template_dir = os.path.join(os.path.dirname(__file__), 'template')
@@ -55,7 +52,7 @@ class Handler(webapp2.RequestHandler):
 		self.set_secure_cookie('user_id', str(user.key().id()))
 
 	def logout(self):
-		self.response.headers.add_header('Set-Cookie', 'user_id=; Path=/')
+		self.response.delete_cookie('user_id')
 
 	def initialize(self, *a, **kw):
 		webapp2.RequestHandler.initialize(self, *a, **kw)
@@ -68,54 +65,101 @@ class Handler(webapp2.RequestHandler):
 			self.format = 'html'
 
 
-class PermalinkAPIHandler(Handler):
-	def get(self, post_id):
-		blog_post = BlogPosts.get_by_id(int(post_id))
-
-		if blog_post:
-			self.response.headers['Content-Type'] = 'application/json'
-			self.write(json.dumps({'contents': str(blog_post.content),
-									'created': time.strftime(str(blog_post.created)),
-									'subject': str(blog_post.subject)}))
-		else:
-			self.render('404.html')
-
-class BlogAPIHandler(Handler):
+class WikiPageHandler(Handler):
 	def get(self):
-		q = BlogPosts.all()
-		q.order("-created")
-
-		blog_listings = []
-		for blog_post in q.run(limit=10):
-			if blog_post:
-				blog_listings.append({'contents': str(blog_post.content),
-									  'created': time.strftime(str(blog_post.created)),
-									  'subject': str(blog_post.subject)})
-
-		if blog_listings:
-			self.response.headers['Content-Type'] = 'application/json'
-			self.write(json.dumps(blog_listings))
-		else:
-			self.render('404.html')
+		pass
 
 
-class CacheFlushHandler(Handler):
+class SignupHandler(Handler):
 	def get(self):
-		#flush the cache and redirect
-		reset_cache()
-		self.redirect('/blog')
+		self.render('signup.html')
+
+	def post(self):
+		have_error = False
+		self.username = self.request.get('username')
+		self.password = self.request.get('password')
+		self.verify = self.request.get('verify')
+		self.email = self.request.get('email')
+
+		params = dict(username = self.username,
+					  email = self.email)
+
+		if not valid_username(self.username):
+			params['error_username'] = "That's not a valid username."
+			have_error = True
+
+		if not valid_password(self.password):
+			params['error_password'] = "That wasn't a valid password."
+			have_error = True
+		elif self.password != self.verify:
+			params['error_verify'] = "Your passwords didn't match."
+			have_error = True
+
+		if not valid_email(self.email):
+			params['error_email'] = "That's not a valid email."
+			have_error = True
+
+		if have_error:
+			self.render('signup.html', **params)
+		else:
+			self.register()
+
+	def register(self):
+		#hash password
+		if email:
+			recently_add_user = User.register(self.username, self.password, email = None)
+		else:
+			recently_add_user = User.register(self.username, self.password, self.email)
+
+		#make cookie hash
+		set_secure_cookie('user_id', make_secure_val(recently_add_user.key().id()))
+
+		#redirect to home page
+		self.redirect('/')
 
 
-class AboutHandler(Handler):
+class LoginHandler(Handler):
+	def get(self):
+		self.render('login.html')
+
+	def post(self):
+		username = self.request.get('username')
+		password = self.request.get('password')
+
+		u = User.login(username, password)
+		if u:
+			self.login(u)
+			self.redirect('/')
+		else:
+			msg = 'Invalid login'
+			self.render('login.html', error = msg)
+
+
+class LogoutHandler(Handler):
+	def get(self):
+		#path for redirection
+		path = self.request.get('path')
+
+		#logout & redirect to webpage
+		self.logout()
+		self.redirect('%s' % path)
+
+
+class EditPageHandler(Handler):
+	def get(self):
+		pass
+
+class AboutPageHandler(Handler):
 	def get(self):
 		self.render('about.html')
 
 
 PAGE_RE = r'(/(?:[a-zA-Z0-9_-]+/?)*)'
-app = webapp2.WSGIApplication([('/signup', SignupHandler),
-							   ('/login', LoginHandler),
-							   ('/logout', LogoutHanlder),
+app = webapp2.WSGIApplication([('/about/?', AboutPageHandler),
+							   ('/signup/?', SignupHandler),
+							   ('/login/?', LoginHandler),
+							   ('/logout/?', LogoutHandler),
 							   ('/_edit' + PAGE_RE, EditPageHandler),
-							   (PAGE_RE, WikiPage),
+							   (PAGE_RE, WikiPageHandler),
 							   ],
 							  debug=True)
