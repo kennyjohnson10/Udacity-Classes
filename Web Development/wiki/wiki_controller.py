@@ -10,7 +10,7 @@ import json
 from wiki_model import WikiPost, User
 
 #import helper functions
-from helpers.validations import validate_blog_subject, validate_blog_body, validate_username, validate_password, validate_email
+from helpers.validations import validate_content, validate_username, validate_password, validate_email
 from helpers.encryption import check_secure_val, make_secure_val
 from helpers.cache_helper import get_cached_data, cache_data, reset_cache
 
@@ -66,8 +66,8 @@ class Handler(webapp2.RequestHandler):
 
 
 class WikiPageHandler(Handler):
-	def get(self):
-		pass
+	def get(self, url):
+		self.render('wiki_page.html')
 
 
 class SignupHandler(Handler):
@@ -84,18 +84,18 @@ class SignupHandler(Handler):
 		params = dict(username = self.username,
 					  email = self.email)
 
-		if not valid_username(self.username):
+		if not validate_username(self.username):
 			params['error_username'] = "That's not a valid username."
 			have_error = True
 
-		if not valid_password(self.password):
+		if not validate_password(self.password):
 			params['error_password'] = "That wasn't a valid password."
 			have_error = True
 		elif self.password != self.verify:
-			params['error_verify'] = "Your passwords didn't match."
+			params['error_mismatch_passwords'] = "Your passwords didn't match."
 			have_error = True
 
-		if not valid_email(self.email):
+		if not validate_email(self.email):
 			params['error_email'] = "That's not a valid email."
 			have_error = True
 
@@ -105,18 +105,25 @@ class SignupHandler(Handler):
 			self.register()
 
 	def register(self):
-		#hash password
-		if email:
-			recently_add_user = User.register(self.username, self.password, email = None)
+		#make sure the user doesn't already exist
+		u = User.by_name(self.username)
+		if u:
+			msg = 'That user already exists.'
+			self.render('signup-form.html', error_username = msg)
 		else:
-			recently_add_user = User.register(self.username, self.password, self.email)
+			if self.email:
+				recently_add_user = User.register(self.username, self.password, self.email)
+			else:
+				recently_add_user = User.register(self.username, self.password)
 
-		#make cookie hash
-		set_secure_cookie('user_id', make_secure_val(recently_add_user.key().id()))
+			#save user to db and login user
+			recently_add_user.put()
+			self.login(recently_add_user)
 
-		#redirect to home page
-		self.redirect('/')
+			#redirect to home page
+			self.redirect('/')
 
+		
 
 class LoginHandler(Handler):
 	def get(self):
@@ -147,7 +154,7 @@ class LogoutHandler(Handler):
 
 class EditPageHandler(Handler):
 	def get(self):
-		pass
+		self.response('blah')
 
 class AboutPageHandler(Handler):
 	def get(self):
