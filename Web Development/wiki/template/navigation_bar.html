@@ -11,23 +11,25 @@
 					<span class="icon-bar"></span>
 				</a>
 
-				<a class="brand" href="/blog">Blog Project</a>
+				<a class="brand" href="/">Wiki Project</a>
 			 
 				<!-- Everything you want hidden at 940px or less, place within here -->
 				<div class="nav-collapse collapse">
 				<!-- .nav, .navbar-search, .navbar-form, etc -->
 					<ul class="nav">
-						<li class="{{ home_active_tab }}"><a href="/blog">Home</a></li>	
-						<li class="divider-vertical"></li>	
-
-						<li class="{{ newpost_active_tab }}"><a href="/blog/newpost">NewPost</a></li>	
-						<li class="divider-vertical"></li>
+						<li class="{{ home_active_tab }}"><a href="/">Home</a></li>	
 					</ul>
 
 					<ul class="nav pull-right">
-						<li class=""><a href="/blog/login">Log in</a></li>	
-						<li class="divider-vertical"></li>
-						<li class=""><a href="/blog/signup">Signup</a></li>
+						{% if logged_in %}
+							<li class=""><a href="/_edit/{{ uri_webpage }}">Edit</a></li>
+							<li class=""> | </li>
+							<li class="">{{ user }}<a href="/logout">Logout</a></li>
+						{% elif  %}
+							<li class=""><a href="/login">Login</a></li>	
+							<li class=""> | </li>
+							<li class=""><a href="/signup">Signup</a></li>
+						{% endif %}
 					</ul>
 					<!-- figure out how to get this form to work correctly
 					<form class="navbar-form pull-right" method="post">
