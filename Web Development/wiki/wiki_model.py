@@ -3,16 +3,32 @@ from google.appengine.ext import db
 #Blog Models
 class WikiPost(db.Model):
 	"""Models an individual BlogPosts entry with an subject, content, and date."""
-	subject = db.StringProperty(required = True)
-	content = db.TextProperty(required = True)
-	created = db.DateTimeProperty(auto_now_add = True)
+	url_path = db.StringProperty(required = True)
+	url_content = db.TextProperty(required = True)
 
+	@classmethod
+	def by_id(cls, url_id):
+		return User.get_by_id(url_id)
+
+	@classmethod
+	def by_name(cls, url_path):
+		wiki_post = WikiPost.all().filter('url_path =', url_path).get()
+		return wiki_post
+
+	@classmethod
+	def create(cls, url_path, url_content):
+		return WikiPost(url_path = url_path,
+						url_content = url_content)
+
+
+def users_key(group = 'default'):
+	return db.Key.from_path('users', group)
 
 class User(db.Model):
 	"""Models an individual Users account with a username, password, and email."""
 	username = db.StringProperty(required = True)
 	password = db.StringProperty(required = True)
-	email = db.EmailProperty()
+	email = db.EmailProperty(required = True)
 
 	@classmethod
 	def by_id(cls, uid):
