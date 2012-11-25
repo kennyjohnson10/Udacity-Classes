@@ -1,0 +1,32 @@
+{% extends "footer.html" %}
+
+
+<!--Title tag for the home page-->
+{% block title %}
+	Blog Front
+{% endblock title %}
+ 
+{% block content %}
+<!--Body content-->
+	<div class="well well-large">
+		<div class="well">
+			<form class="form-horizontal" method="post">
+				<div class="control-group">
+					<label class="control-label" for="inputContent">Content</label>
+					<div class="controls">
+						<textarea type="text" name="content" id="inputContent" placeholder="Content">
+							This is a new wiki page.
+							{{ content }}
+						</textarea>
+					</div>
+				</div>
+
+				<div class="control-group">
+					<div class="controls">
+						<button type="submit" class="btn">Save</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+{% endblock content %}
