@@ -2,11 +2,8 @@ import re
 
 
 #helper functions to validate data
-def validate_blog_subject(blog_subject):
-	return True if not blog_subject.isspace() and blog_subject else False
-
-def validate_blog_body(blog_body):
-	return True if not blog_body.isspace() and blog_body else False
+def validate_content(content):
+	return True if not content.isspace() and content else False
 
 USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
 def validate_username(username):
