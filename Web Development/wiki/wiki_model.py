@@ -29,7 +29,7 @@ class User(db.Model):
 	"""Models an individual Users account with a username, password, and email."""
 	username = db.StringProperty(required = True)
 	password = db.StringProperty(required = True)
-	email = db.EmailProperty(required = True)
+	email = db.EmailProperty()
 
 	@classmethod
 	def by_id(cls, uid):
@@ -41,11 +41,11 @@ class User(db.Model):
 		return u
 
 	@classmethod
-	def register(cls, name, pw, email = None):
+	def register(cls, name, pw, email = 'the_company_email@company.organization'):
 		pw_hash = make_pw_hash(name, pw)
 		return User(parent = users_key(),
-					name = name,
-					pw_hash = pw_hash,
+					username = name,
+					password = pw_hash,
 					email = email)
 
 	@classmethod
