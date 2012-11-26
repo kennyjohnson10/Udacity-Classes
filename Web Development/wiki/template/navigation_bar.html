@@ -21,13 +21,13 @@
 					</ul>
 
 					<ul class="nav pull-right">
-						{% if logged_in %}
+						{% if login_status %}
 							<li class=""><a href="/_edit/{{ uri_webpage }}">Edit</a></li>
-							<li class=""> | </li>
-							<li class="">{{ user }}<a href="/logout">Logout</a></li>
-						{% elif  %}
+							<li class="divider-vertical"></li>
+							<li class="">{{ user }} <a href="/logout">(Logout)</a></li>
+						{% else %}
 							<li class=""><a href="/login">Login</a></li>	
-							<li class=""> | </li>
+							<li class="divider-vertical"></li>
 							<li class=""><a href="/signup">Signup</a></li>
 						{% endif %}
 					</ul>
