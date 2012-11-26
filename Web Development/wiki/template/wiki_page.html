@@ -12,18 +12,13 @@
 		<div class="well">
 			<form class="form-horizontal" method="post">
 				<div class="control-group">
-					<label class="control-label" for="inputContent">Content</label>
 					<div class="controls">
-						<textarea type="text" name="content" id="inputContent" placeholder="Content">
-							This is a new wiki page.
-							{{ content }}
-						</textarea>
-					</div>
-				</div>
-
-				<div class="control-group">
-					<div class="controls">
-						<button type="submit" class="btn">Save</button>
+						{% if in_edit_content_mode %}
+							<textarea class="textarea-size" type="text" name="content" id="inputContent" placeholder="Content"><h2>This is a new wiki page.<h2>{{ content }}</textarea>
+							<button type="submit" class="btn">Save</button>
+						{% else %}
+							<h2>This is a new wiki page.<h2>
+						{% endif %}
 					</div>
 				</div>
 			</form>
