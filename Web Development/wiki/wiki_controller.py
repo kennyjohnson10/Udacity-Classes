@@ -1,9 +1,6 @@
 import webapp2
 import jinja2
 import os
-import random
-import string
-import time
 import json
 
 #import models
@@ -26,12 +23,16 @@ class Handler(webapp2.RequestHandler):
 		self.response.out.write(*a, **kw)
 
 	def render_str(self, template, **params):
-		params['user'] = self.user
+		#params['user'] = self.username
+		params['login_status'] = self.login_status()
 		t = jinja_env.get_template(template)
 		return t.render(params)
 
 	def render(self, template, **kw):
 		self.write(self.render_str(template, **kw))
+
+	def login_status(self):
+		return self.user
 
 	def render_json(self, d):
 		json_txt = json.dumps(d)
@@ -58,6 +59,7 @@ class Handler(webapp2.RequestHandler):
 		webapp2.RequestHandler.initialize(self, *a, **kw)
 		uid = self.read_secure_cookie('user_id')
 		self.user = uid and User.by_id(int(uid))
+		self.uid = uid
 
 		if self.request.url.endswith('.json'):
 			self.format = 'json'
@@ -135,22 +137,19 @@ class LoginHandler(Handler):
 
 		u = User.login(username, password)
 		if u:
+			#self.username = u.username
 			self.login(u)
 			self.redirect('/')
 		else:
 			msg = 'Invalid login'
-			self.render('login.html', error = msg)
+			self.render('login.html', error = str(u))
 
 
 class LogoutHandler(Handler):
 	def get(self):
-		#path for redirection
-		path = self.request.get('path')
-
 		#logout & redirect to webpage
 		self.logout()
-		self.redirect('%s' % path)
-
+		self.redirect('/')
 
 class EditPageHandler(Handler):
 	def get(self):
