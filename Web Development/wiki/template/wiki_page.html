@@ -3,25 +3,32 @@
 
 <!--Title tag for the home page-->
 {% block title %}
-	Blog Front
+	Wiki Front
 {% endblock title %}
  
 {% block content %}
 <!--Body content-->
 	<div class="well well-large">
-		<div class="well">
-			<form class="form-horizontal" method="post">
-				<div class="control-group">
-					<div class="controls">
-						{% if in_edit_content_mode %}
-							<textarea class="textarea-size" type="text" name="content" id="inputContent" placeholder="Content"><h2>This is a new wiki page.<h2><br>{{ content }}</textarea>
-							<button type="submit" class="btn">Save</button>
-						{% else %}
-							<h2>This is a new wiki page.<h2>
-						{% endif %}
-					</div>
-				</div>
+		{% if login_status %}
+			<form class="well" method="post">
+				<fieldset>
+					{% if in_edit_content_mode %}
+						<textarea class="textarea-size" type="text" name="content" id="inputContent" placeholder="Content">{{ content }}</textarea>
+						<button type="submit" class="btn">Save</button>
+					{% else %}
+						<div>{{ content }}</div>
+						<button type="submit" class="btn">Edit</button>
+					{% endif %}
+				</fieldset>
 			</form>
-		</div>
+		{% else %}
+			<div class="well">
+				{% if content %}
+					<div>{{ content }}</div>
+				{% else %}
+					<h2>This is a new wiki page.<h2>
+				{% endif %}
+			</div>
+		{% endif %}
 	</div>
 {% endblock content %}
