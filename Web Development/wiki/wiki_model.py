@@ -12,14 +12,13 @@ class WikiPost(db.Model):
 		return User.get_by_id(url_id)
 
 	@classmethod
-	def by_name(cls, url_path):
+	def by_path(cls, url_path):
 		wiki_post = WikiPost.all().filter('url_path =', url_path).get()
 		return wiki_post
 
 	@classmethod
 	def create(cls, url_path, url_content):
-		return WikiPost(url_path = url_path,
-						url_content = url_content)
+		return WikiPost(url_path = url_path, url_content = url_content).put()
 
 
 def users_key(group = 'default'):
