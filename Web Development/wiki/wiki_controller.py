@@ -2,6 +2,7 @@ import webapp2
 import jinja2
 import os
 import json
+import cgi
 
 #import models
 from wiki_model import WikiPost, User
@@ -14,7 +15,7 @@ from helpers.cache_helper import get_cached_data, cache_data, reset_cache
 #Setup view directory for Jinja template engine
 template_dir = os.path.join(os.path.dirname(__file__), 'template')
 jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), 
-																autoescape = True)
+																autoescape = False)
 
 
 #http request handlers
@@ -55,6 +56,17 @@ class Handler(webapp2.RequestHandler):
 	def logout(self):
 		self.response.delete_cookie('user_id')
 
+	def escape_html(s):
+		return cgi.escape(s, quote = True)
+
+	def initial_wiki_render(self, url, in_edit_content_mode = False):
+		if url == '/':
+			self.render('wiki_page.html', content = '<h1>Welcome to the wiki.</h1><br/><h2>This is a new wiki page.</h2><br>',
+										  in_edit_content_mode = in_edit_content_mode)
+		else:
+			self.render('wiki_page.html', content = '<h2>This is a new wiki page.</h2><br/>',
+										  in_edit_content_mode = True)
+	
 	def initialize(self, *a, **kw):
 		webapp2.RequestHandler.initialize(self, *a, **kw)
 		uid = self.read_secure_cookie('user_id')
@@ -65,11 +77,6 @@ class Handler(webapp2.RequestHandler):
 			self.format = 'json'
 		else:
 			self.format = 'html'
-
-
-class WikiPageHandler(Handler):
-	def get(self, url):
-		self.render('wiki_page.html')
 
 
 class SignupHandler(Handler):
@@ -111,7 +118,7 @@ class SignupHandler(Handler):
 		u = User.by_name(self.username)
 		if u:
 			msg = 'That user already exists.'
-			self.render('signup-form.html', error_username = msg)
+			self.render('signup.html', error_username = msg)
 		else:
 			if self.email:
 				recently_add_user = User.register(self.username, self.password, self.email)
@@ -151,9 +158,55 @@ class LogoutHandler(Handler):
 		self.logout()
 		self.redirect('/')
 
+
+class WikiPageHandler(Handler):
+	def get(self, url):
+		#Check for existing wiki post
+		wiki_post = WikiPost.by_path(url)
+
+		if wiki_post:
+			self.render('wiki_page.html', content = wiki_post.url_content)
+		else:
+			self.initial_wiki_render(url)
+	
+	def post(self, url):
+		#Edit content after it has been created.
+		self.redirect('/_edit%s' % url)
+
+
 class EditPageHandler(Handler):
-	def get(self):
-		self.response('blah')
+	def get(self, url):
+		#wiki page does not exist yet, we render an edit page 
+		self.render_url_content(url)
+
+	def post(self, url):
+		#get content from the db
+		wiki_post = WikiPost.by_path(url)
+
+		#get url content from post request
+		content = self.request.get('content')
+
+		if wiki_post:
+			#save content changes to db
+			wiki_post.url_content = content
+		else:
+			#create and add new wiki_post to db 
+			wiki_post = WikiPost.create(url, content)
+
+		#render the url with saved content in view mode (non-edit mode)
+		self.redirect(url)
+
+	def render_url_content(self, url):
+		#Check for existing wiki post
+		wiki_post = WikiPost.by_path(url)
+
+		if wiki_post:
+			self.render('wiki_page.html', content = wiki_post.url_content,
+										  in_edit_content_mode = True)
+		else:
+			#render the url with saved content in non-edit mode
+			self.initial_wiki_render(url, in_edit_content_mode = True)
+
 
 class AboutPageHandler(Handler):
 	def get(self):
