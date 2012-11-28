@@ -9,12 +9,11 @@ class WikiPost(db.Model):
 
 	@classmethod
 	def by_id(cls, url_id):
-		return User.get_by_id(url_id)
+		return WikiPost.get_by_id(url_id)
 
 	@classmethod
 	def by_path(cls, url_path):
-		wiki_post = WikiPost.all().filter('url_path =', url_path).get()
-		return wiki_post
+		return WikiPost.all().filter('url_path =', url_path).get()
 
 	@classmethod
 	def create(cls, url_path, url_content):
@@ -36,8 +35,7 @@ class User(db.Model):
 
 	@classmethod
 	def by_name(cls, name):
-		u = User.all().filter('username =', name).get()
-		return u
+		return User.all().filter('username =', name).get()
 
 	@classmethod
 	def register(cls, name, pw, email = 'the_company_email@company.organization'):
