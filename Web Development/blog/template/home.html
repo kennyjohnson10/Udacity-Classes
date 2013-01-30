@@ -1,6 +1,5 @@
 {% extends "footer.html" %}
 
-
 <!--Title tag for the home page-->
 {% block title %}
 	Blog Front
@@ -8,7 +7,7 @@
  
 {% block content %}
 <!--Body content-->
-	<div class="well well-large">
+	<div id="homeContent">
 		<h2>Latest 10 Comments</h2>
 		{% for post in blog_postings %}
 			<div class="well">
