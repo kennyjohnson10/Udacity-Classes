@@ -1,6 +1,31 @@
 body, html {
 	height: 100%;
 }
+body {
+	padding-left: 0px !important;
+	padding-right: 0px !important;
+
+	/*Due to the fact web browsers define different default styling for html elements, 
+	the first thing to do is to always include a CSS reset in your stylesheet. By using 
+	this code, you’re already eliminating lots of future headaches.*/
+	html,body,div,ul,ol,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,pre,form,p,blockquote,fieldset,input,hr {margin:0; padding:0;}
+	h1,h2,h3,h4,h5,h6,pre,code,address,caption,cite,code,em,strong,th {font-size:1em; font-weight:normal; font-style:normal;}
+	ul,ol {list-style:none;}
+	fieldset,img,hr {border:none;}
+	caption,th {text-align:left;}
+	table {border-collapse:collapse; border-spacing:0;}
+	td {vertical-align:top;}
+
+	.header{
+		font-size: $header_font;
+		font-weight: bold;
+		color: $font_color;
+		margin-top: 40px;
+		margin-bottom: 20px;
+		margin-left: 20px;
+	}
+}
+
 #contentContainer {
 	min-height: 100%;
 }
