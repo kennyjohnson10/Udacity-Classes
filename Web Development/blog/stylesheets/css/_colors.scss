@@ -1,7 +1,9 @@
-/* roygbiv colors*/
-/* background colors*/
-
+// base colors
 $white : white;
+$black: black;
+
+//variables using base colors
+$font_color : $black;
 
 .background_red {
 	background-color: red;
