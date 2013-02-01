@@ -67,7 +67,10 @@ class BlogHandler(Handler):
 
 class NewPostHandler(Handler):
 	def get(self):
-		self.render('newpost.html', newpost_active_tab = 'active')
+		if self.login_status():
+			self.render('newpost.html', newpost_active_tab = 'active')
+		else:
+			self.redirect('/blog')
 
 	def post(self):
 		blog_subject = self.request.get('subject')
