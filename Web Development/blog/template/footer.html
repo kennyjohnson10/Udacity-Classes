@@ -1,20 +1,31 @@
 {% extends "navigation_bar.html" %}
 
 {% block foot_links %}
-	<div class="row-fluid background_black padding">
-		<div class="span3 offset1">
-			<ul>
-				<li class="footer-item-title azure2">Developer Info:</li>
-				<li class="footer-item"><a href="http://www.bitbucket.org/moviedo">BitBucket</a></li>
-				<li class="footer-item"><a href="http://www.github.com/moviedo">GitHub</a></li>
-			</ul>
-		</div>
+	<div id="footerContent">
+		<div class="row-fluid">
+			<div class="span3">
+				<ul>
+					<li class="footer-item-title">Developer Info:</li>
+					<li class="footer-item"><a href="http://www.bitbucket.org/moviedo">BitBucket</a></li>
+					<li class="footer-item"><a href="http://www.github.com/moviedo">GitHub</a></li>
+				</ul>
+			</div>
 
-		<div class="span2 ">
-			<ul>
-				<li class="footer-item-title azure2">General Info:</li>
-				<li class="footer-item"><a href="/blog/about">About</a></li>
-			</ul>
+			<div class="span3">
+				<ul>
+					<li class="footer-item-title">General Info:</li>
+					<li class="footer-item"><a href="/blog/about">About</a></li>
+				</ul>
+			</div>
+
+			<div class="span6">
+				<ul class="pull-right">
+					<li class="footer-item-title">
+						Created By:
+						<span id="creatorName">Mauro Oviedo</span>
+					</li>
+				</ul>
+			</div>
 		</div>
 	</div>
 {% endblock foot_links %}
