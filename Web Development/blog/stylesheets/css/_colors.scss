@@ -1,9 +1,24 @@
 // base colors
 $white : white;
 $black: black;
+$red : red;
+$gray : gray;
+$azure2 : #E0EEEE;
+$lightGray : #DCDCDC;
+$darkBlue : #005580;
+
 
 //variables using base colors
+$body_color : $lightGray;
 $font_color : $black;
+$error_color : $red;
+
+//variable for the footer
+$foot_item_title_color : $azure2;
+
+//variable for timep stamp
+$timp_stamp_color : $darkBlue;
+
 
 .background_red {
 	background-color: red;
