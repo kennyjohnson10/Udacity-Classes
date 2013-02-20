@@ -60,22 +60,20 @@ void rgba_to_greyscale(const uchar4* const rgbaImage,
   //{
   //    return;
   //}
-  int absolute_image_position_x = threadIdx.x;
-  int absolute_image_position_y = threadIdx.y;
 
-  if ( absolute_image_position_x >= numCols ||
-    absolute_image_position_y >= numRows )
-  {
-    return;
-  }
+  int threadsPerBlock = blockDim.x * blockDim.y;
+  int blockId = blockIdx.x + (blockIdx.y * gridDim.x);
+  int threadId = threadIdx.x + (threadIdx.y * blockDim.x);
 
-  uchar4 index = rgbaImage[absolute_image_position_y * numCols + absolute_image_position_x];
+  int globalIdx = (blockId * threadsPerBlock) + threadId;
+
+  uchar4 index = rgbaImage[globalIdx];
 
   float R = index.x;
   float G = index.y;
   float B = index.z;
 
-  greyImage[absolute_image_position_y * numCols + absolute_image_position_x] = 0.299f * R + 0.587f * G + 0.114f * B;
+  greyImage[globalIdx] = 0.299f * R + 0.587f * G + 0.114f * B;
 }
 
 void your_rgba_to_greyscale(const uchar4 * const h_rgbaImage,
