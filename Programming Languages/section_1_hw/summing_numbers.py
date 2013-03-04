@@ -12,11 +12,37 @@
 # Hint: int("44") == 44
 
 import re
+import unittest
 
 def sumnums(sentence): 
-# write your code here
+	# write your code here
+	result = 0
 
-         
+	regex = r'\d+' # or r'[0-9]+'
+	arr_result = re.findall(regex, sentence)
+
+	if len(arr_result) == 0:
+		return result
+	else:
+		for number in arr_result:
+			result += int(number)
+		return result
+
+
+class TestSummingNumbers(unittest.TestCase):
+
+	def test_input_of_single_string(self):
+		result = sumnums('34')
+		self.assertEqual(int, type(result))
+
+	def test_input_of_string_with_no_integer_values(self):
+		result = sumnums('abc')
+		self.assertEqual(0, result)
+	
+	def test_correct_addition_of_ints_in_input(self):
+		result = sumnums('abc 23, 5')
+		self.assertEqual(28, result)
+		 
 
 # This problem includes an example test case to help you tell if you are on
 # the right track. You may want to make your own additional tests as well.
@@ -31,3 +57,7 @@ if sumnums(test_case_input) == test_case_output:
 else:
   print "Test case failed:" 
   print sumnums(test_case_input) 
+
+
+
+
