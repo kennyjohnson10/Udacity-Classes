@@ -17,7 +17,7 @@
 # regexp does not exactly match "tricky-" 
 # regexp does not exactly match "large - scale" 
 # regexp does not exactly match "gamma-ray-burst" 
-# regexp does not exactly match "" 
+# regexp does not exactly match ""
 
 # Your regular expression only needs to handle lowercase strings.
 
@@ -27,11 +27,47 @@
 
 
 import re
+import unittest
 
-regexp = r"" # you should replace this with your regular expression
+regexp = r"(?:[a-z]+-[a-z]+)|[a-z]+" # you should replace this with your regular expression
 
 # This problem includes an example test case to help you tell if you are on
 # the right track. You may want to make your own additional tests as well.
+
+
+class TestSinglyHyphenatedWords(unittest.TestCase):
+
+	def test_input_of_single_word_string(self):
+		result = re.findall(regexp, "astronomy")
+		self.assertEqual(result, ['astronomy'])
+
+	def test_input_of_single_word_with_hyphen(self):
+		result = re.findall(regexp, "near-infrared")
+		self.assertEqual(result, ['near-infrared'])
+
+	def test_word_with_hyphen_before_word(self):
+		result = re.findall(regexp, "-tricky")
+		self.assertEqual(result, ['tricky'])
+
+	def test_word_with_hyphen_after_word(self):
+		result = re.findall(regexp, "tricky-")
+		self.assertEqual(result, ['tricky'])
+
+	def test_word_with_two_hyphens(self):
+		result = re.findall(regexp, "gamma-ray-burst")
+		self.assertEqual(result, ['gamma-ray', 'burst'])
+
+	def test_words_with_hyphens_separated_by_spaces(self):
+		result = re.findall(regexp, "gamma - ray - burst")
+		self.assertEqual(result, ['gamma', 'ray', 'burst'])
+
+	def test_single_letter_word(self):
+		result = re.findall(regexp, "a")
+		self.assertEqual(result, ['a'])
+
+	def test_numbers_with_hyphens(self):
+		result = re.findall(regexp, "1966-07-23")
+		self.assertEqual(result, [])
 
 test_case_input = """the wide-field infrared survey explorer is a nasa
 infrared-wavelength space telescope in an earth-orbiting satellite which
@@ -45,7 +81,7 @@ test_case_output = ['the', 'wide-field', 'infrared', 'survey', 'explorer',
 'hyphens', 'be', 'precise']
 
 if re.findall(regexp, test_case_input) == test_case_output:
-  print "Test case passed."
+	print "Test case passed."
 else:
-  print "Test case failed:" 
-  print re.findall(regexp, test_case_input) 
+	print "Test case failed:" 
+	print re.findall(regexp, test_case_input) 
