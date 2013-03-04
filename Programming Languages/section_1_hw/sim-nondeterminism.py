@@ -44,33 +44,18 @@ def nfsmsim(string, current, edges, accepting):
 	True
 	'''
 	if string == "":
-		try: 
-			if len(current) > 1:
-				return current[0] in accepting or current[1] in accepting
-			else:
-				return current[0] in accepting
+		return current in accepting
 
-		# If not, return False.
-		except Exception:
-			return False
 	else:
 		letter = string[0]
+			
+		# If so, take it.
+		if (current, letter) in edges:
+			newstates = edges[(current, letter)]
+			for state in newstates:
+				if nfsmsim(string[1:], state, edges, accepting):
+					return True
 
-		# Is there a valid edge?
-		try:
-			current = edges[(current, letter)]
-
-			# If so, take it.
-			if len(string) > 1:
-				if len(current) > 1:
-					return nfsmsim(string[1:], current[0], edges, accepting) or nfsmsim(string[1:], current[1], edges, accepting)
-				else:
-					return nfsmsim(string[1:], current[0], edges, accepting)
-			else:
-				return nfsmsim('', current, edges, accepting)
-
-		# If not, return False.
-		except KeyError:
 			return False
 
 
