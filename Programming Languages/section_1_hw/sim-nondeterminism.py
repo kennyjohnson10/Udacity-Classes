@@ -27,21 +27,77 @@
 #
 # For example, the regular expression r"a+|(?:ab+c)" might be encoded like
 # this:
+import unittest
+
 edges = { (1, 'a') : [2, 3],
-          (2, 'a') : [2],
-          (3, 'b') : [4, 3],
-          (4, 'c') : [5] }
+		  (2, 'a') : [2],
+		  (3, 'b') : [4, 3],
+		  (4, 'c') : [5] }
 accepting = [2, 5] 
 # It accepts both "aaa" (visiting states 1 2 2 and finally 2) and "abbc"
 # (visting states 1 3 3 4 and finally 5). 
 
 def nfsmsim(string, current, edges, accepting): 
-# fill in your code here 
+	'''
+	(str, int, dict, array) --> bool
+	>>> print nfsmsim("abc",1,edges,accepting)
+	True
+	'''
+	if string == "":
+		try: 
+			if len(current) > 1:
+				return current[0] in accepting or current[1] in accepting
+			else:
+				return current[0] in accepting
 
-        
+		# If not, return False.
+		except Exception:
+			return False
+	else:
+		letter = string[0]
+
+		# Is there a valid edge?
+		try:
+			current = edges[(current, letter)]
+
+			# If so, take it.
+			if len(string) > 1:
+				if len(current) > 1:
+					return nfsmsim(string[1:], current[0], edges, accepting) or nfsmsim(string[1:], current[1], edges, accepting)
+				else:
+					return nfsmsim(string[1:], current[0], edges, accepting)
+			else:
+				return nfsmsim('', current, edges, accepting)
+
+		# If not, return False.
+		except KeyError:
+			return False
+
+
+class TestFSMSim(unittest.TestCase):
+
+	def test_for_input_of_one_A(self):
+		self.assertTrue(nfsmsim("a",1,edges,accepting))
+
+	def test_for_input_of_multiple_As(self):
+		self.assertTrue(nfsmsim("aaaaaaaa",1,edges,accepting))
+
+	def test_for_input_of_one_B(self):
+		self.assertTrue(nfsmsim("abc",1,edges,accepting))
+
+	def test_for_input_of_multiple_Bs(self):
+		self.assertTrue(nfsmsim("abbbbc",1,edges,accepting))
+
+	def test_for_empty_string(self):
+		self.assertFalse(nfsmsim("",1,edges,accepting))
+
+	def test_for_bad_input_string(self):
+		self.assertFalse(nfsmsim("aabc",1,edges,accepting))
+
 
 # This problem includes some test cases to help you tell if you are on
 # the right track. You may want to make your own additional tests as well.
+
 
 print "Test case 1 passed: " + str(nfsmsim("abc", 1, edges, accepting) == True) 
 print "Test case 2 passed: " + str(nfsmsim("aaa", 1, edges, accepting) == True) 
